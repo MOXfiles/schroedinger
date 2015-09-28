@@ -1993,12 +1993,12 @@ schro_upsampled_frame_upsample (SchroUpsampledFrame * df)
     df->frames[i]->extension = df->frames[0]->extension;
     memcpy (df->frames[i]->components, df->frames[0]->components,
         sizeof (SchroFrameData) * 3);
-    df->frames[i]->components[0].data +=
-      (df->frames[i]->components[0].stride >> 2) * i;
-    df->frames[i]->components[1].data +=
-      (df->frames[i]->components[1].stride >> 2) * i;
-    df->frames[i]->components[2].data +=
-      (df->frames[i]->components[2].stride >> 2) * i;
+    df->frames[i]->components[0].data =
+		(char *)df->frames[i]->components[0].data + (df->frames[i]->components[0].stride >> 2) * i;
+    df->frames[i]->components[1].data =
+      (char *)df->frames[i]->components[1].data + (df->frames[i]->components[1].stride >> 2) * i;
+    df->frames[i]->components[2].data =
+      (char *)df->frames[i]->components[2].data + (df->frames[i]->components[2].stride >> 2) * i;
   }
 
   schro_frame_upsample_vert (df->frames[2], df->frames[0]);

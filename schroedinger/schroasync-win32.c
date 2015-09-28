@@ -177,18 +177,19 @@ void
 schro_async_stop (SchroAsync * async)
 {
   int i;
-  HANDLE *handles;
+
+  EnterCriticalSection (&async->mutex);
+  async->stop = STOP;
+  LeaveCriticalSection (&async->mutex);
 
   for (i = 0; i < async->n_threads; i++) {
     SetEvent (async->threads[i].event);
   }
 
-  handles = schro_malloc (sizeof (HANDLE) * async->n_threads);
-  for (i = 0; i < async->n_threads; i++) {
-    handles[i] = async->threads[i].thread;
+  while(async->n_idle < async->n_threads)
+  {
+	WaitForSingleObject(async->app_event, INFINITE);
   }
-  WaitForMultipleObjects (async->n_threads, handles, TRUE, INFINITE);
-  schro_free (handles);
 }
 
 void
